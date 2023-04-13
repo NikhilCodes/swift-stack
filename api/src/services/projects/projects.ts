@@ -34,7 +34,6 @@ export const createProject: MutationResolvers['createProject'] = async ({
     const lines = output.stdout.split('\n')
     const lastLine = lines[lines.length - 2]
     const ip = JSON.parse(lastLine.split(' = ')[1])
-    console.log(ip)
     db.project
       .update({
         where: { id: newProject.id },
@@ -63,7 +62,7 @@ export const deleteProject: MutationResolvers['deleteProject'] = async ({
     projectId: id,
     projectName: project.name,
     postgresPassword: project.dbPassword,
-  }).then(console.log)
+  }).then()
   return db.project.delete({
     where: { id },
   })

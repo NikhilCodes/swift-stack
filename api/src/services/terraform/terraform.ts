@@ -39,21 +39,17 @@ export const destroyTerraform = async ({
 }) => {
   try {
     const stateFileData = await downloadStateFile(projectId)
-    console.log('Fetched state file data', stateFileData)
 
     fs.mkdirSync(`/tmp/${projectId}-terraform-workspace`, { recursive: true })
 
     const stateFilePath = `/tmp/${projectId}-terraform-workspace/terraform.tfstate`
     await saveStateFile(stateFileData, stateFilePath)
-    console.log('Saved state file')
-    console.log('Running terraform destroy')
     const stdout = await runTerraformDestroy({
       stateFilePath,
       projectId,
       projectName,
       postgresPassword,
     })
-    console.log('Terraform destroy DONE', stdout)
     return {
       success: true,
       message: 'Terraform destroy has been triggered.',

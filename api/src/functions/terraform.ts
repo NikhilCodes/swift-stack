@@ -43,7 +43,6 @@ export const runTerraformDestroy = ({
           console.error(`Stderr running terraform destroy: ${stderr}`)
           reject(stderr)
         } else {
-          console.log(`Terraform destroy output: ${stdout}`)
           resolve(stdout)
         }
       }

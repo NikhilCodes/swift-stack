@@ -20,18 +20,12 @@ const APPLY_TERRAFORM = gql`
 const HomePage = () => {
   const [projectName, setProjectName] = useState('')
   const [postgresPassword, setPostgresPassword] = useState('')
-  const [applyTerraformMutation, { loading, error }] = useMutation(
-    APPLY_TERRAFORM,
-    {
-      fetchPolicy: 'network-only',
-      onCompleted: (data) => {
-        console.log('data', data)
-      },
-    }
-  )
-
-  console.log('loading', loading)
-  console.log('error', error)
+  const [applyTerraformMutation] = useMutation(APPLY_TERRAFORM, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      console.log('data', data)
+    },
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
