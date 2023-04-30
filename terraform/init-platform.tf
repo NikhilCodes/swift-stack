@@ -17,6 +17,13 @@ resource "aws_security_group" "postgres_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # SSH
   ingress {
     from_port   = 22
@@ -55,7 +62,20 @@ resource "aws_instance" "postgres_instance" {
               sudo systemctl enable docker
               sudo usermod -aG docker ec2-user
               docker pull postgres:latest
+              docker pull postgrest/postgrest:latest
               docker run --name postgres -e POSTGRES_PASSWORD=${var.postgres_password} -p 5432:5432 -d postgres
+
+              sleep 10
+
+              docker run --name postgrest \
+                --link postgres:postgres \
+                -p 3000:3000 \
+                -e PGRST_DB_URI="postgres://postgres:${var.postgres_password}@postgres:5432/postgres" \
+                -e PGRST_DB_SCHEMA="public" \
+                -e PGRST_DB_ANON_ROLE="anonymous" \
+                -e PGRST_DB_POOL="10" \
+                -e PGRST_SERVER_PROXY_URI="http://localhost:3000" \
+                -d postgrest/postgrest
               EOF
 }
 
